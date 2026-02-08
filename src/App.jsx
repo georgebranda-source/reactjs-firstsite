@@ -15,6 +15,9 @@ function App() {
       placeholder=""
       />
       <p> {text} </p>
+      <p> Just adding some text becasue
+        2:45PM HKT
+      </p>
       
 
 
