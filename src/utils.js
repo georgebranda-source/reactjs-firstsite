@@ -1,3 +1,28 @@
+export async function load() {
+      const chinaImports =  await fetchVector("China", "imports", "all");
+      const chinaExports =  await fetchVector("China", "exports", "all");
+      const usImports =  await fetchVector("US", "imports", "all");
+      const usExports =  await fetchVector("US", "exports", "all");
+      const euImports =  await fetchVector("EU", "imports", "all");
+      const euExports =  await fetchVector("EU", "exports", "all");
+      const ukImports =  await fetchVector("UK", "imports", "all");
+      const ukExports =  await fetchVector("UK", "exports", "all");
+      const mexicoImports =  await fetchVector("Mexico", "imports", "all");
+      const mexicoExports =  await fetchVector("Mexico", "exports", "all");
+      return {
+        chinaImports,
+        chinaExports,
+        usImports,
+        usExports,
+        euImports,
+        euExports,
+        ukImports,
+        ukExports,
+        mexicoImports,
+        mexicoExports
+    };
+}
+
 export function sourceData( {indicator, range, data}) {
     {/* Returns the real data matrix for the graphs to use according to selections*/}
     let matrix;
@@ -36,7 +61,6 @@ export function sourceData( {indicator, range, data}) {
 
     {/*Filter array according to cutoff date*/}
     matrix = matrix.filter(item => item.refPer >= cutoff);
-
     return matrix;
 }
 
@@ -48,6 +72,26 @@ function mergeArrays(chinaArray, usArray, euArray, ukArray, mexicoArray) {
         euValue: euArray[index].value,
         ukValue: ukArray[index].value,
         mexicoValue: mexicoArray[index].value
+    }));
+}
+
+export function formatValues(matrix) {
+    {/*Returns matrix with values as strings with 2 decimals*/}
+    return matrix.map(item => ({
+        refPer: item.refPer,
+        chinaValue: item.chinaValue.toFixed(2),
+        usValue: item.usValue.toFixed(2),
+        euValue: item.euValue.toFixed(2),
+        ukValue: item.ukValue.toFixed(2),
+        mexicoValue: item.mexicoValue.toFixed(2)
+    }));
+}
+
+export function formatDates(matrix) {
+    {/*Formats date from YYYY-MM-DD to Month, X, XXXX*/}
+    return matrix.map(item => ({
+        ...item,
+        refPer: new Date(item.refPer).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
     }));
 }
 
@@ -67,7 +111,7 @@ export function normalizeMatrix(matrix) {
     }));
 }
 
-export async function fetchVector(country, impex) {
+async function fetchVector(country, impex) {
     const data = [];
     const startDate = "1997-01-01";
     const today = new Date().toISOString().split("T")[0];

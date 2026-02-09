@@ -1,0 +1,23 @@
+.spinner {
+    border: 6px solid #f3f3f300;
+    border-top: 6px solid #7e7e7e;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+.chart-container {
+    border: 0px solid #282828;
+    padding: 0rem;
+}
+
+.chart-wrapper {
+    border: 1px solid #282828;
+    padding: 0rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

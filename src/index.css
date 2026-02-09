@@ -23,7 +23,10 @@ a:hover {
 }
 
 body {
-  margin: 0;
+  font-family: "Cambria", serif;
+  color:#1a1a1a;
+  background-color: #fff9ef;
+  margin: 0;  
   display: flex;
   place-items: center;
   min-width: 320px;
