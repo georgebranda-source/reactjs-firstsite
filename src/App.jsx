@@ -108,7 +108,7 @@ function App() {
                 <p> Displayed in percentage of value at earliest selected date </p>
                 <div className="chart-wrapper">
                   <Chart data={normalizedMatrix} showChina={showChina} showUS={showUS} showEU={showEU} showUK={showUK} showMexico={showMexico}/>
-                  {/*loading && (
+                  {loading && (
                     <div className="loading-overlay"
                       style={{
                         position: "absolute",
@@ -124,7 +124,7 @@ function App() {
                       <div className="spinner" style={{ marginRight: "1rem" }}></div>
                       Loading customs data...
                     </div>
-                  )*/}
+                  )}
                 </div>
               </div>
               <div className="chart-container">
@@ -132,6 +132,23 @@ function App() {
                 <p> Displayed in millions of Canadian dollars (CAD) </p>
                 <div className="chart-wrapper">
                   <Chart data={realMatrix} showChina={showChina} showUS={showUS} showEU={showEU} showUK={showUK} showMexico={showMexico} />
+                  {loading && (
+                    <div className="loading-overlay"
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div className="spinner" style={{ marginRight: "1rem" }}></div>
+                      Loading customs data...
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -151,7 +168,7 @@ function App() {
               <b/>
               <a style={{ marginLeft: "0.25rem" }} href="https://www23.statcan.gc.ca/imdb/p2SV.pl?Function=getSurvey&SDDS=2201" target="_blank" rel="noopener noreferrer">
               Learn more </a>
-              <p style={{marginLeft: "2rem"}}> Created by George Branda for educational and recreational purposes. </p>
+              <p> Created by George Branda for educational and recreational purposes. </p>
             </div>
             {/*<img src={beaver} alt="National animal" style={{ width: "100px", height: "100px", marginLeft: "1rem", marginRight: "1rem" }} /> */}
           </div>
