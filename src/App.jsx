@@ -8,7 +8,7 @@ import beaver from './assets/beaver.png';
 import loonie from './assets/loonie.png';
 
 function App() {
-  const [currentTab, setCurrentTab] = useState("home");
+  const [currentTab, setCurrentTab] = useState("customs tracker");
 
   const [data, setData] = useState([]);
   const [realMatrix, setRealMatrix] = useState([]);
@@ -51,12 +51,12 @@ function App() {
       </header>
       
       <nav style={{marginLeft: "2rem"}}>
-        <button onClick={() => setCurrentTab("home")}>Home</button>
+        <button onClick={() => setCurrentTab("customs tracker")}>Customs Tracker</button>
         <button onClick={() => setCurrentTab("about")}>About</button>
       </nav>
 
       <div style={{ padding: "1rem" }}>
-        {currentTab === "home" && (
+        {currentTab === "customs tracker" && (
           <div>
             <label style={{ marginLeft: "2rem" }}>
               Select range:{" "}
