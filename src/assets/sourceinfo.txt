@@ -1,8 +1,6 @@
-Statistics Canada. Table 12-10-0011-01  International merchandise trade for all countries and by Principal Trading Partners, monthly (x 1,000,000)
-
 This webpage displays the latest available customs figures using data compiled by Statistics Canada. Import and non-US export data is sourced from Canada Border Services Agency (CBSA) customs declaration forms. US export data is sourced from United States Customs and Border Protection (CBP) declarations.
 Figures are scheduled to release monthly, subject to certain disruptions, generally 2-3 months behind their date of publication.
 
 All data is seasonally adjusted to account for regularly occurring changes in activity.
 
-More documentation on data sources and methodology is available at Statistics Canada.
+More documentation on data sources and methodology is available at statcan.gov.ca.
