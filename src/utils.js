@@ -91,7 +91,7 @@ export function formatDates(matrix) {
     {/*Formats date from YYYY-MM-DD to Month, X, XXXX*/}
     return matrix.map(item => ({
         ...item,
-        refPer: new Date(item.refPer).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+        refPer: new Date(item.refPer).toLocaleDateString("en-US", { year: "numeric", month: "short" })
     }));
 }
 
