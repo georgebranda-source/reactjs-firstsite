@@ -23,7 +23,7 @@ export async function load() {
     };
 }
 
-export function sourceData( {indicator, range, data}) {
+export function filterCustomsData( {indicator, range, data}) {
     {/* Returns the real data matrix for the graphs to use according to selections*/}
     let matrix;
 
@@ -112,7 +112,6 @@ export function normalizeMatrix(matrix) {
 }
 
 async function fetchVector(country, impex) {
-    const data = [];
     const startDate = "1997-01-01";
     const today = new Date().toISOString().split("T")[0];
 
@@ -140,4 +139,166 @@ async function fetchVector(country, impex) {
     const json = await response.json();
     
     return json[0].object.vectorDataPoint;
+}
+
+export async function loadPortData() {
+    //Returns formatted array of each year of live port data
+    //2019-2020
+    let response = await fetch("https://services9.arcgis.com/weJ1QsnbMYJlCHdG/arcgis/rest/services/Daily_Ports_Data/FeatureServer/0/query?where=portid%20%3D%20'PORT1350'%20AND%20year%20%3E%3D%202019%20AND%20year%20%3C%3D%202020&outFields=year,month,day,import_tanker,import_cargo,import,export_tanker,export_cargo,export&returnGeometry=false&outSR=4326&f=json")
+    let json = await response.json();
+    let data=json.features;
+    //2021-2022
+    response = await fetch("https://services9.arcgis.com/weJ1QsnbMYJlCHdG/arcgis/rest/services/Daily_Ports_Data/FeatureServer/0/query?where=portid%20%3D%20'PORT1350'%20AND%20year%20%3E%3D%202021%20AND%20year%20%3C%3D%202022&outFields=year,month,day,import_tanker,import_cargo,import,export_tanker,export_cargo,export&returnGeometry=false&outSR=4326&f=json")
+    json = await response.json();
+    data.push(... json.features);
+    //2023-2024
+    response = await fetch("https://services9.arcgis.com/weJ1QsnbMYJlCHdG/arcgis/rest/services/Daily_Ports_Data/FeatureServer/0/query?where=portid%20%3D%20'PORT1350'%20AND%20year%20%3E%3D%202023%20AND%20year%20%3C%3D%202024&outFields=year,month,day,import_tanker,import_cargo,import,export_tanker,export_cargo,export&returnGeometry=false&outSR=4326&f=json")
+    json = await response.json();
+    data.push(... json.features);
+    //2025-2026
+    response = await fetch("https://services9.arcgis.com/weJ1QsnbMYJlCHdG/arcgis/rest/services/Daily_Ports_Data/FeatureServer/0/query?where=portid%20%3D%20'PORT1350'%20AND%20year%20%3E%3D%202025%20AND%20year%20%3C%3D%202026&outFields=year,month,day,import_tanker,import_cargo,import,export_tanker,export_cargo,export&returnGeometry=false&outSR=4326&f=json")
+    json = await response.json();
+    data.push(... json.features);
+    data = formatPortData(data);
+    console.log('Initial load: ', data);
+    return data;
+}
+
+function formatPortData(data) {
+    //Returns an array containing objects with date, import, and export
+    data=data.map(item => {
+        return {
+            imports_tanker:item.attributes.import_tanker,
+            imports_cargo:item.attributes.import_cargo,
+            imports:item.attributes.import,
+            exports_tanker:item.attributes.export_tanker,
+            exports_cargo:item.attributes.export_cargo,
+            exports:item.attributes.export,
+            timestamp: new Date(item.attributes.year, item.attributes.month-1, item.attributes.day).getTime(),
+            date: new Date(item.attributes.year, item.attributes.month-1, item.attributes.day).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+        }
+    });
+    data.sort((a, b) => a.timestamp-b.timestamp);
+    /*
+    REDUNDANT: Remove duplicate dates from array
+    console.log('Avant merge:', data);
+    //Merge duplicate dates
+    let thinned=[]; 
+    data.forEach(element => {
+        const duplicate = thinned.find(e => e.timestamp === element.timestamp);
+
+        if (!duplicate) {
+            thinned.push({ ...element }); 
+        }
+    });
+    data=thinned;
+    */
+    return data;
+}
+
+export function filterPortData(data, resolution, type, range) {
+    //Takes full data set and decides what to display based on user selections
+    let matrix;
+
+    //First filters data to include only desired ship type
+    if (type==='cargo') {
+        matrix=data.map(item => {
+            return {
+                importvalue:item.imports_cargo,
+                exportvalue:item.exports_cargo,
+                timestamp:item.timestamp,
+                date:item.date
+            }
+        });
+    } else if (type==='tanker') {
+        matrix=data.map(item => {
+            return {
+                importvalue:item.imports_tanker,
+                exportvalue:item.exports_tanker,
+                timestamp:item.timestamp,
+                date:item.date
+            }
+        });
+    } else if (type==='all') {
+        matrix=data.map(item => {
+            return {
+                importvalue:item.imports,
+                exportvalue:item.exports,
+                timestamp:item.timestamp,
+                date:item.date
+            }
+        });
+    }
+
+    /*Filter matrix according to cutoff date*/
+    let cutoffLow = new Date(range[0], 0, 1).getTime();
+    let cutoffHigh = new Date(range[1], 11, 31).getTime();
+    matrix = matrix.filter(item => item.timestamp >= cutoffLow);
+    matrix = matrix.filter(item => item.timestamp <= cutoffHigh);
+
+    //Filters matrix to only include points at desired resolution  
+    if (resolution==='monthly') {
+        matrix=aggregateByMonth(matrix);
+    } else if (resolution==='weekly') {
+        matrix=aggregateByWeek(matrix);
+    }
+
+    return matrix;
+}
+
+function aggregateByWeek(matrix) {
+    let aggregated=[];
+    let monday=0;
+    //Will not total most recent dates that are not a full week
+    while (monday+7<=matrix.length) {
+        let index=monday;
+        let weeklyAggregate= {
+            importvalue: 0,
+            exportvalue: 0,
+            timestamp: matrix[monday].timestamp,
+            date: matrix[monday].date
+        }
+        while (index<monday+7 && index<matrix.length) {
+            //For each day of the week, add it to the total
+            weeklyAggregate.importvalue+=matrix[index].importvalue;
+            weeklyAggregate.exportvalue+=matrix[index].exportvalue;
+            index++;
+        }
+        aggregated.push(weeklyAggregate);
+        monday+=7;
+    }
+    return aggregated;
+}
+
+function aggregateByMonth(matrix) {
+    //Create an empty object literal
+    const monthMap = {};
+    let tally=0;
+    let monthKey;
+
+    matrix.forEach(element => {
+        const dateObj = new Date(element.timestamp);
+        //Builds a string with the year and month, ex. '2026-1'
+        monthKey= `${dateObj.getFullYear()}-${dateObj.getMonth()}`;
+
+        //Creates month item if this is the first of the month, then adds the current day's values to it.
+        if (!monthMap[monthKey]) {
+            monthMap[monthKey] = {
+                importvalue: 0,
+                exportvalue: 0,
+                timestamp: element.timestamp,
+                date: element.date
+            };
+            tally=0;
+        }
+        monthMap[monthKey].importvalue += element.importvalue;
+        monthMap[monthKey].exportvalue += element.exportvalue;
+        tally++;
+    });
+    //If there was data for fewer than 28 days this month, that is not counted as a month and the values are not displayed.
+    if (tally <28) {
+        delete monthMap[monthKey];
+    }
+
+    return Object.values(monthMap);
 }

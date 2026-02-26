@@ -1,7 +1,7 @@
 import "../index.css";
 import { useEffect, useState } from "react";
 import Chart from '../components/Chart.jsx';
-import { load, normalizeMatrix, sourceData } from '../utils.js';
+import { load, normalizeMatrix, filterCustomsData } from '../utils.js';
 
 export default function CustomsTracker() {
     const [data, setData] = useState([]);
@@ -19,8 +19,8 @@ export default function CustomsTracker() {
     const [loading, setLoading] = useState(true);
     const [apiError, setApiError] = useState(false);
     
-    {/* Initial data load on component mount */}
     useEffect(() => {
+        //Initial data load on component mount
         setLoading(true);
         load()
             .then(setData)
@@ -31,16 +31,16 @@ export default function CustomsTracker() {
             .finally(() => setLoading(false));
     }, []);
     
-    {/* Once data is initialized, update data whenever indicator or range is set */}
     useEffect(() => {
+        //Set graph matrices when data is initialized/indicator or range change
         if (Object.keys(data).length > 0) {
-            setRealMatrix(sourceData({ indicator, range, data }));
-            setNormalizedMatrix(normalizeMatrix(sourceData({ indicator, range, data })));
+            setRealMatrix(filterCustomsData({ indicator, range, data }));
+            setNormalizedMatrix(normalizeMatrix(filterCustomsData({ indicator, range, data })));
         }
     }, [indicator, range, data]);
     
-    {/* Debugging: log data updates */}
     useEffect(() => {
+        //Debugging: log data updates
         console.log("Data updated: ", realMatrix);
     }, [realMatrix]);
     
