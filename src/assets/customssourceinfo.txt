@@ -3,4 +3,6 @@ Figures are scheduled to release monthly, subject to certain disruptions, genera
 
 All data is seasonally adjusted to account for regularly occurring changes in activity.
 
+This page is meant to easily overlay data from multiple countries and compare them in a normalized view, addressing gaps in the tools provided by Statistics Canada and the World Bank's native visualizers.
+
 More documentation on data sources and methodology is available at statcan.gov.ca.

@@ -2,7 +2,7 @@
 // All packages except `@mantine/hooks` require styles imports
 import '@mantine/core/styles.css';
 import '@mantine/charts/styles.css';
-
+import {AppShell, Tabs, Flex} from '@mantine/core';
 import { MantineProvider } from '@mantine/core';
 
 import { useState } from "react";
@@ -16,24 +16,47 @@ export default function App() {
 
   return (
     <MantineProvider>
-      <div>
-        <header style={{ display: "flex", alignItems: "center", padding: "1rem" }}>
-                <h1> Canadian International Trade Dashboard </h1>
-                <img src={loonie} alt="Loonie" style={{ width: "100px", height: "100px", marginLeft: "1rem" }} />
-        </header>
-        
-        <nav style={{marginLeft: "2rem"}}>
-          <button onClick={() => setCurrentTab("customs tracker")}>Customs Tracker</button>
-          <button onClick={() => setCurrentTab("port activity")}>Port Activity</button>
-          <button onClick={() => setCurrentTab("about")}>About</button>
-        </nav>
-
-        <div style={{ padding: "1rem" }}>
-          {currentTab === "customs tracker" && <CustomsTracker />}
-          {currentTab === "port activity" && <PortActivity />}
-          {currentTab === "about" && (<About />)}
-        </div>
-      </div>
-  </MantineProvider>
+      <AppShell >
+        <Flex
+            direction={{ base: "column", md: "row" }}
+            align="center"
+            gap="md"
+            p="md"
+          >
+            <Flex align="center" gap="md" >
+              <h3 style={{ margin: 0 }}>Canadian International Trade Dashboard</h3>
+              <img
+                src={loonie}
+                alt="Loonie"
+                style={{ width: "25px", height: "25px" }}
+              />
+            </Flex>
+            <Tabs
+              defaultValue="port activity"
+              onChange={setCurrentTab}
+              style={{ flex: 1, width: "100%", height: "100%" }}
+            >
+              <Tabs.List grow>
+                <Tabs.Tab value="customs tracker" fw={500}>
+                  Customs Tracker
+                </Tabs.Tab>
+                <Tabs.Tab value="port activity" fw={500}>
+                  Port Activity
+                </Tabs.Tab>
+                <Tabs.Tab value="about" fw={500}>
+                  About
+                </Tabs.Tab>
+              </Tabs.List>
+            </Tabs>
+          </Flex>
+        <AppShell.Main>
+          <div>
+            {currentTab === "customs tracker" && <CustomsTracker />}
+            {currentTab === "port activity" && <PortActivity />}
+            {currentTab === "about" && (<About />)}
+          </div>
+        </AppShell.Main>
+      </AppShell>
+    </MantineProvider>
   );
 }

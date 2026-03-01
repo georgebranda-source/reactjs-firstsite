@@ -1,0 +1,16 @@
+This page is intended to provide a higher resolution and more up-to-date tracker of Canada's trade with Asia, particularly China.
+
+"These datasets are based on raw AIS data from the United National Global Platform and estimates by the PortWatch team based on the methodology described in the paper 
+    Arslanalp, S., Koepke, R., & Verschuur, J. Tracking Trade from Space: An Application to Pacific Island Countries. IMF Working Paper No. 2021/225.https://www.imf.org/en/Publications/WP/Issues/2021/08/20/Tracking-Trade-from-Space-An-Application-to-Pacific-Island-Countries-464345"
+"
+
+Notice the high correlation (exact vector correlation to be calculated) between the Aggregate Monthly view on this page and the Aggregate China view on the customs page: Each season follows the other closely, because of how important this port is to Canadian trade with China. Therefore, this can be used as a rough(?) early predictor of Canada's trade figures with China, at a daily level of resolution. (Data is updated weekly).
+
+
+
+https://www.portvancouver.com/article/port-vancouver-enables-record-trade-first-half-2025-supporting-canada-and-canadians-during: " More than 80% of the trade through the Port of Vancouver is Canadian trade with countries other than the U.S. 
+60% of crude from the port of Vancouver goes to China.
+China is the single largest trading partner at the port."
+Canola also important liquid export, quickly rising since Carney visit.
+--> Importance of tanker exports. 
+
